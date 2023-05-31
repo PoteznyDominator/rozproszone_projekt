@@ -1,19 +1,40 @@
 {% extends 'base.html' %}
 
 {% block body %}
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-danger w-75" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <form class="w-75" enctype=multipart/form-data method="post">
-        <div class="form-group mb-3">
+        <div class="form-floating mb-3">
+            <input type="text" name="name" class="form-control" id="name" placeholder="Pierogi, schabowe, ciasto" value="{{ recipe.name if editing_mode }}">
             <label for="name">Nazwa przepisu</label>
-            <input type="text" name="name" class="form-control" id="name" placeholder="Pierogi, schabowe, ciasto">
         </div>
-        <div class="form-group mb-3">
+        <div class="form-floating mb-3">
+            <input type="text" name="description" class="form-control" id="description" placeholder="Krótki opis potrawy" value="{{ recipe.description if editing_mode }}">
             <label for="description">Opis</label>
-            <input type="text" name="description" class="form-control" id="description" placeholder="Krótki opis potrawy">
         </div>
-        <div class="form-group mb-3">
-            <label for="file" class="form-label">Zdjęcie pysznej potrawy</label>
-            <input class="form-control" name="file" type="file" id="file">
+        <div class="input-group mb-3 custom-file-button">
+            <label for="file" class="input-group-text">Zdjęcie pysznej potrawy</label>
+            <input class="form-control" name="file" type="file" id="file" title="Wybierz plik">
         </div>
-        <input type="submit" class="btn btn-primary" value="Dodaj">
+        {% if editing_mode %}
+            <div class="mb-3 col-4">
+                <p>Poprzednie zdjęcie:</p>
+                <img src="/{{ recipe.image_uri }}" class="w-100" alt="img">
+            </div>
+        {% endif %}
+        <div class="form-floating mb-3">
+            <textarea class="form-control" placeholder="Dodaj składniki" id="ingredients" name="ingredients">{{ recipe.ingredients if editing_mode }}</textarea>
+            <label for="ingredients">Składniki</label>
+        </div>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" placeholder="Dodaj składniki" id="instructions" name="instructions">{{ recipe.instructions if editing_mode }}</textarea>
+            <label for="instructions">Przygotowanie</label>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="{{ 'Zapisz' if editing_mode else 'Dodaj' }}">
     </form>
 {% endblock %}
